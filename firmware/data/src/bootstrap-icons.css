@@ -1,0 +1,43 @@
+@font-face {
+    font-family: bootstrap-icons;
+    src: url("bootstrap-icons.woff2") format("woff2"), url("bootstrap-icons.woff") format("woff")
+}
+
+.bi::before,
+[class*=" bi-"]::before,
+[class^=bi-]::before {
+    display: inline-block;
+    font-family: bootstrap-icons!important;
+    font-style: normal;
+    font-weight: 400!important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.bi-lightning-charge-fill::before {
+    content: "\f46c"
+}
+
+.bi-geo-alt-fill::before {
+    content: "\f3e7"
+}
+
+.bi-thermometer::before {
+    content: "\f5d2"
+}
+
+.bi-toggles2::before {
+    content: "\f5da"
+}
+
+.bi-fan::before {
+    content: "\f670"
+}
+
+.bi-question-diamond::before {
+    content: "\f507"
+}

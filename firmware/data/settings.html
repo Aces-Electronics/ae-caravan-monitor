@@ -75,7 +75,7 @@
                         <input type="text" name="hostname" class="form-control fst-italic" id="hostname"
                             placeholder="%hostname%" value="%hostname%" minlength="3" maxlength="20" size="20" title="Enter a hostname, 3-20 characters, beginning with a letter and containing only alphanumeric
                                 characters and/or a single hyphen.  It must end with an alphanumeric character."
-                            pattern="^[a-zA-Z][a-zA-Z\d-]{1,20}[a-zA-Z\d]$">
+                            pattern="[-a-zA-Z0-9(),.:\s]{1,25}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -83,7 +83,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="friendlyname" class="form-control fst-italic" id="friendlyname"
                             placeholder="AE CM" value="%friendlyname%" minlength="1" maxlength="25" size="25"
-                            pattern="[_a-zA-Z0-9(),.:\-' <>]{1,25}"
+                            pattern="[-a-zA-Z0-9(),.:\s]{1,25}"
                             title="Only the following characters are allowed: A-Za-z0-9_()., :-'<> with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="ch1name" class="form-control fst-italic" id="ch1name"
                             placeholder="e.g.:12V Battery Bank (100V DC Max.)" value="%ch1name%" minlength="1"
-                            maxlength="25" size="25" pattern="[_a-zA-Z0-9(),.:\-' <>]{1,25}"
+                            maxlength="25" size="25" pattern="[-a-zA-Z0-9(),.:\s]{1,25}"
                             title="Only the following characters are allowed: A-Za-z0-9_().,:-' <> with a length between 1 and 25 characters.">
                     </div>
 
@@ -102,7 +102,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="ch2name" class="form-control fst-italic" id="ch2name"
                             placeholder="e.g.:24V Battery Bank (100V DC Max.)" value="%ch2name%" minlength="1"
-                            maxlength="25" size="25" pattern="[_a-zA-Z0-9(),.:\-<>' ]{1,25}"
+                            maxlength="25" size="25" pattern="[-a-zA-Z0-9(),.:\s]{1,25}"
                             title="Only the following characters are allowed: A-Za-z0-9_().,:-<>' with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="ch3name" class="form-control fst-italic" id="ch3name"
                             placeholder="e.g.:48V Battery Bank (100V DC Max.)" value="%ch3name%" minlength="1"
-                            maxlength="25" size="25" pattern="[_a-zA-Z0-9(),.:\-<>' ]{1,25}"
+                            maxlength="25" size="25" pattern="[-a-zA-Z0-9(),.:\s]{1,25}"
                             title="Only the following characters are allowed: A-Za-z0-9_().,:-<>' with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="relay1name" class="form-control fst-italic" id="relay1name"
                             placeholder="e.g.:Pump (1A Max.)" value="%relay1name%" minlength="1" maxlength="20"
-                            size="20" pattern="[_a-zA-Z0-9(),.:\-<>' ]{1,20}"
+                            size="20" pattern="[_a-zA-Z0-9(),.:'\-]{1,20}"
                             title="Only the following characters are allowed: A-Za-z0-9_().,:-<>' with a length between 1 and 16 characters.">
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="relay2name" class="form-control fst-italic" id="relay2name"
                             placeholder="e.g.:Shed Light (1A Max.)" value="%relay2name%" maxlength="20" size="20"
-                            pattern="[_a-zA-Z0-9(),.:\-<>' ]{1,20}"
+                            pattern="[_a-zA-Z0-9(),.:'\-]{1,20}"
                             title="Only the following characters are allowed: A-Za-z0-9_().,:-<>' with a length between 1 and 16 characters.">
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="httpusername" class="form-control fst-italic" id="httpusername"
                             placeholder="admin_username" value="%httpusername%" minlength="5" maxlength="25" size="25"
-                            pattern="[_a-zA-Z0-9(),.:\-' <>]{5,25}"
+                            pattern="[_a-zA-Z0-9(),.:\-' ]{5,25}"
                             title="Only the following characters are allowed: _A-Za-z0-9_().,:-<>' with a length between 5 and 25 characters.">
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                     <div class="col-sm-10">
                         <input type="text" name="httppassword" class="form-control fst-italic" id="httppassword"
                             placeholder="********" value="%httppassword%" minlength="5" maxlength="25" size="25"
-                            pattern="[_a-zA-Z0-9(),.:\-<>' ]{5,25}"
+                            pattern="[_a-zA-Z0-9(),.:\- ]{5,25}"
                             title="Only the following characters are allowed: _A-Za-z0-9_().,:-<>' with a length between 5 and 25 characters.">
                     </div>
                 </div>
@@ -158,10 +158,10 @@
             <div class="p-4 p-lg-5 bg-light rounded-3">
                 <h1 class="display-5 fw-bold text-center">Ethernet Settings</h1>
                 <div class="form-check form-switch" style="padding: unset;">
-                    <label class="form-check-label fw-bold text-center text-decoration-underline" for="apenabled">Enable
+                    <label class="form-check-label fw-bold text-center text-decoration-underline" for="ethenabled">Enable
                         Ethernet Interface (Wired)
                         Configuration<input style="float: right; margin-left: 10px;" class="form-check-input"
-                            name="apenabled" type="checkbox" onchange="enableEthernetMode(this)" id="Ethernetenabled">
+                            name="ethenabled" type="checkbox" onchange="enableEthernetMode(this)" id="ethenabled">
                     </label>
                 </div>
                 <div class="form-check form-switch" style="padding: unset;">
@@ -217,7 +217,7 @@
                         for="staenabled">Enable
                         WiFi Client (Wireless)
                         Configuration<input style="float: right; margin-left: 10px;" class="form-check-input"
-                            name="staenabled" type="checkbox" onchange="enableWiFiSTAMode(this)" id="wifistaenabled">
+                            name="staenabled" type="checkbox" onchange="enableWiFiSTAMode(this)" id="staenabled">
                     </label>
                 </div>
 
@@ -225,7 +225,7 @@
                     <label class="form-check-label fw-bold text-center text-decoration-underline"
                         for="staticstaipen">Enable Static IP
                         Configuration (DHCP if disabled)<input style="float: right; margin-left: 10px;"
-                            class="form-check-input" name="staticethipen" type="checkbox"
+                            class="form-check-input" name="staticstaipen" type="checkbox"
                             onchange="enableSTAStaticIP(this)" id="staticstaipen">
                     </label>
                 </div>
@@ -235,7 +235,7 @@
                     <div class="col-sm-10">
                         <input required type="text" name="stassid" class="form-control fst-italic" id="stassid"
                             placeholder="Network's name to connect to" value="%stassid%" minlength="1" maxlength="25"
-                            size="25" pattern="[_a-zA-Z0-9(),.:\-<>' ]{5,25}"
+                            size="25" pattern="[_a-zA-Z0-9(),.:\- ]{5,25}"
                             title="Only the following characters are allowed: _A-Za-z0-9_().,:-<>' with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -244,7 +244,7 @@
                     <div class="col-sm-10">
                         <input required type="text" name="stapwd" class="form-control fst-italic" id="stapwd"
                             id="stapwd" placeholder="Password for that network" value="%stapwd%" minlength="1"
-                            maxlength="25" size="25" pattern="[_a-zA-Z0-9(),.:\-<>' ]{5,25}"
+                            maxlength="25" size="25" pattern="[_a-zA-Z0-9(),.:\- ]{5,25}"
                             title="Only the following characters are allowed: _A-Za-z0-9_().,:-<>' with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -292,7 +292,7 @@
                     <div class="col-sm-10">
                         <input required type="text" name="apssid" class="form-control fst-italic" id="apssid"
                             placeholder="Network's name to connect to" value="%apssid%" minlength="1" maxlength="25"
-                            size="25" pattern="[_a-zA-Z0-9(),.:\-<>' ]{5,25}"
+                            size="25" pattern="[_a-zA-Z0-9(),.:\- ]{5,25}"
                             title="Only the following characters are allowed: _A-Za-z0-9_().,:-<>' with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -301,7 +301,7 @@
                     <div class="col-sm-10">
                         <input required type="text" name="appwd" class="form-control fst-italic" id="appwd" id="appwd"
                             placeholder="Password for that network" value="%appwd%" minlength="1" maxlength="25"
-                            size="25" pattern="[_a-zA-Z0-9(),.:\-<>' ]{5,25}"
+                            size="25" pattern="[_a-zA-Z0-9(),.:\- ]{5,25}"
                             title="Only the following characters are allowed: _A-Za-z0-9_().,:-<>' with a length between 1 and 25 characters.">
                     </div>
                 </div>
@@ -397,7 +397,7 @@
         function enableEthernetMode(element) {
             if (element.checked) {
                 console.log('Ethernet config enabled in settings')
-                document.getElementById("wifistaenabled").checked = false;
+                document.getElementById("staenabled").checked = false;
                 document.getElementById("apenabled").checked = false;
             } else {
                 console.log('Ethernet config disabled in settings')
@@ -422,8 +422,8 @@
                 APGatewayElement.removeAttribute("readonly");
                 APSSIDElement.removeAttribute("readonly");
                 APPWDElement.removeAttribute("readonly");
-                document.getElementById("wifistaenabled").checked = false;
-                document.getElementById("Ethernetenabled").checked = false;
+                document.getElementById("staenabled").checked = false;
+                document.getElementById("ethenabled").checked = false;
                 
             } else {
                 console.log('AP config disabled in settings')
@@ -445,7 +445,7 @@
                 console.log('STA config enabled in settings')
                 STASSIDElement.removeAttribute("readonly");
                 STAPWDElement.removeAttribute("readonly");
-                document.getElementById("Ethernetenabled").checked = false;
+                document.getElementById("ethenabled").checked = false;
                 document.getElementById("apenabled").checked = false;
             } else {
                 console.log('STA config disabled in settings')
@@ -608,7 +608,7 @@
 
         function setDefaults() {
             //need to add the rest of the forms
-            if ("%staticethipen%" == "True") { //if "True/False" == "True"
+            if ("%staticethipen%" == "1") {
                 document.getElementById("staticethipen").setAttribute("checked", "");
                 document.getElementById("ipaddress").removeAttribute("readonly");
                 document.getElementById("subnet").removeAttribute("readonly");
@@ -617,7 +617,7 @@
                 console.log('Static Ethernet IP config "True" has been loaded');
             }
             else {
-                document.getElementById("staticethipen").setAttribute("unchecked", "");
+                document.getElementById("staticethipen").removeAttribute("checked", "");
                 document.getElementById("ipaddress").setAttribute("readonly", "");
                 document.getElementById("subnet").setAttribute("readonly", "");
                 document.getElementById("gateway").setAttribute("readonly", "");
@@ -634,6 +634,7 @@
                 console.log('WiFi Station config true has been loaded');
             }
             else {
+                document.getElementById("staenabled").removeAttribute("checked", "");
                 document.getElementById("stassid").setAttribute("readonly", "");
                 document.getElementById("stapwd").setAttribute("readonly", "");
                 document.getElementById("staipaddress").setAttribute("readonly", "");
@@ -651,6 +652,7 @@
                 console.log('WiFi AP config true has been loaded');
             }
             else {
+                document.getElementById("apenabled").removeAttribute("checked", "");
                 document.getElementById("apssid").setAttribute("readonly", "");
                 document.getElementById("appwd").setAttribute("readonly", "");
                 document.getElementById("apipaddress").setAttribute("readonly", "");
@@ -664,6 +666,7 @@
             }
             else {
                 console.log('Ethernet config false has been loaded');
+                document.getElementById("ethenabled").removeAttribute("checked", "");
             }
         };
         window.onload = setDefaults();

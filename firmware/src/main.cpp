@@ -74,15 +74,11 @@ uint8_t temprature_sens_read();
 //////// END board definitions
 
 //////// Import libraries
-#include <ArduinoOTA.h> // Arduino OTA
-// #include <AsyncTCP.h>               // AsyncTCP library for webserver from https://github.com/yubox-node-org/AsyncTCPSock
-#include <ElegantOTA.h> // OTA
-// #include <ESPAsyncWebServer.h>      // Webserver from best: https://github.com/me-no-dev/AsyncTCP okay: https://github.com/yubox-node-orgESPAsyncWebServer.git#yuboxfixes-0xFEEDC0DE64-cleanup
-#include <ESPmDNS.h>                // MDNS
-#include <ESP_MultiResetDetector.h> // Multi reset detector https://github.com/khoih-prog/ESP_MultiResetDetector
-#include <ETH.h>                    // Ethernet
-#include <FS.h>                     // ESP FS
-#include <LittleFS.h>
+#include <ElegantOTA.h>                       // OTA
+#include <ESPmDNS.h>                          // MDNS
+#include <ESP_MultiResetDetector.h>           // Multi reset detector https://github.com/khoih-prog/ESP_MultiResetDetector
+#include <ETH.h>                              // Ethernet
+#include <FS.h>                               // ESP FS
 #include <Preferences.h>                      // Use flash to save data between restarts
 #include <SPI.h>                              // SPI for ADC
 #include <SimpleTimer.h>                      // Interrupt based timer
@@ -166,6 +162,7 @@ bool saveOnly = false;             // allows the syncsettings function to skip t
 bool MRD_Detected = false;         // MRD
 static bool eth_connected = false; // set the ethernet state as disconnected at boot
 static const int spiClk = 1000000; // 1 MHz for ADC SPI
+unsigned long ota_progress_millis = 0;
 
 String utc_date; // stores GPS UTC date
 String utc_time; // stores GPS UTC time
@@ -249,7 +246,7 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 Adafruit_MQTT_Publish BOSS_CM_B = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_B); // battery v
 Adafruit_MQTT_Publish BOSS_CM_S = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_S); // solar v
 Adafruit_MQTT_Publish BOSS_CM_C = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_C); // car v
-Adafruit_MQTT_Publish BOSS_CM_T = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_T); // car v
+Adafruit_MQTT_Publish BOSS_CM_T = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_T); // Temp
 
 Preferences preferences;            // Hook the object to the library
 I2CGPS myI2CGPS;                    // Hook object to the library
@@ -260,6 +257,34 @@ MultiResetDetector *mrd;            // Hook object to the library
 WiFiUDP Udp;                        // Hook object to the library
 File root;
 //// End initialise all the things
+
+void onOTAStart() {
+  // Log when OTA has started
+  Serial.println("OTA update started!");
+  WebSerial.println("OTA update started!");
+  // <Add your own code here>
+}
+
+void onOTAProgress(size_t current, size_t final) {
+  // Log every 1 second
+  if (millis() - ota_progress_millis > 1000) {
+    ota_progress_millis = millis();
+    Serial.printf("OTA Progress Current: %u bytes, Final: %u bytes\n", current, final);
+    WebSerial.printf("OTA Progress Current: %u bytes, Final: %u bytes\n", current, final);
+  }
+}
+
+void onOTAEnd(bool success) {
+  // Log when OTA has finished
+  if (success) {
+    Serial.println("OTA update finished successfully!");
+    WebSerial.println("OTA update finished successfully!");
+  } else {
+    Serial.println("There was an error during OTA update!");
+    WebSerial.println("There was an error during OTA update!");
+  }
+  // <Add your own code here>
+}
 
 void calculateUptime()
 { // calculate the hardware uptime
@@ -296,7 +321,7 @@ void MQTT_connect()
     return;
   }
 
-  Serial.print("Connecting to Adafruit IO");
+  Serial.println("Connecting to Adafruit IO...");
   uint8_t retry = 5;
 
   if ((again = mqtt.connect()) != 0)
@@ -2406,9 +2431,9 @@ void setup()
   WebSerial.begin(&server); // webserial socket, available at /webserial. Used for debugging like UART
 
   ElegantOTA.begin(&server, http_username.c_str(), http_password.c_str()); // Start ElegantOTA server, require auth
-
-  ArduinoOTA.setHostname(hostname.c_str());
-  ArduinoOTA.setPassword(http_password.c_str());
+  ElegantOTA.onStart(onOTAStart);
+  ElegantOTA.onProgress(onOTAProgress);
+  ElegantOTA.onEnd(onOTAEnd);
 
   if (eth_enabled)
   {
@@ -2450,26 +2475,21 @@ void setup()
   }
   
   MQTT_connect(); // connect to Adafruit.io
-
-  if (mqtt.connected())
-  {
-    ArduinoOTA.begin();
-  }
 }
 
 // runs after setup and loops forever
 void loop()
 {
-  // ArduinoOTA.handle();       // polls for OTAs and deal with them //ToDo: enable when ready
+  ElegantOTA.loop();
   getSensorDataTimer.run();  // runs the getSensorData function on a timer (of 10 seconds) //ToDo: make the time configurable
   updateMDNSDataTimer.run(); // updates the MDNS data on a timer (of 10 minutes)           //ToDo: make the time configurable
   mrd->loop();               // keeps track of the multi reset
   check_status();            // keeps track of the multi reset timeout
   esp_task_wdt_reset();      // ticks the watchdog
 
-  if (WiFi.status() == WL_CONNECTED)
+  if (((millis() - previousTime) > MQTT_KEEP_ALIVE * 1000) || (firstBoot)) 
   {
-    if (((millis() - previousTime) > MQTT_KEEP_ALIVE * 1000) || (firstBoot))
+    if (WiFi.status() == WL_CONNECTED)
     { // publish data every 5 mins
       if (!BOSS_CM_B.publish(ch0_voltage))
       {
@@ -2504,8 +2524,14 @@ void loop()
       {
         Serial.println(F("Published Temperature Voltage!"));
       }
-      previousTime = millis();
+      
       firstBoot = false;
     }
+    else 
+    {
+      WiFi.disconnect();
+      WiFi.reconnect();
+    }
+    previousTime = millis();
   }
 }

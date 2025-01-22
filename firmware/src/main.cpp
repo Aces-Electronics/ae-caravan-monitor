@@ -66,6 +66,7 @@ uint8_t temprature_sens_read();
 #define AIO_FEED_NAME_B "/feeds/boss-aecc-b"
 #define AIO_FEED_NAME_S "/feeds/boss-aecc-s"
 #define AIO_FEED_NAME_C "/feeds/boss-aecc-c"
+#define AIO_FEED_NAME_T "/feeds/boss-aecc-t"
 #define MQTT_KEEP_ALIVE 300
 #endif
 ////// END RC4
@@ -248,6 +249,7 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 Adafruit_MQTT_Publish BOSS_CM_B = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_B); // battery v
 Adafruit_MQTT_Publish BOSS_CM_S = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_S); // solar v
 Adafruit_MQTT_Publish BOSS_CM_C = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_C); // car v
+Adafruit_MQTT_Publish BOSS_CM_T = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME AIO_FEED_NAME_T); // car v
 
 Preferences preferences;            // Hook the object to the library
 I2CGPS myI2CGPS;                    // Hook object to the library
@@ -1058,7 +1060,7 @@ void readFromADC()
   // Read Channel_2
   reading = transfer_data(channel_2);
   ch2_voltage = convert_to_voltage(reading, ADC_resolution, voltage_divider, voltage_reference);
-  if (ch2_voltage < 0.1)
+  if (ch2_voltage < 4.0)
   {
     ch2_voltage = 0.00;
   }
@@ -2493,6 +2495,14 @@ void loop()
       else
       {
         Serial.println(F("Published Car Voltage!"));
+      }
+      if (!BOSS_CM_T.publish(ch0_temperature))
+      {
+        Serial.println(F("Publishing Temperature] Failed!"));
+      }
+      else
+      {
+        Serial.println(F("Published Temperature Voltage!"));
       }
       previousTime = millis();
       firstBoot = false;
